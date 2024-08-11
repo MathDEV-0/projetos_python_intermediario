@@ -1,3 +1,89 @@
+import math
+
+def calcula_preco():
+    #Prefixos que devem ser eliminados para extrair a quantidade
+    prefixos = [
+        'Aveia:', 
+        'Doce de Leite:', 
+        'Whey (proteína de soro de leite):', 
+        'Arroz cozido:', 
+        'Carne (bovina cozida):', 
+        'Frango (peito cozido):', 
+        'Legumes:', 
+        'Nozes:', 
+        'Banana:', 
+        'Pão Francês:', 
+        'Maçã:'
+    ]
+
+    #Preço dos produtos por peso, envolvidos em tuplas, já que tuplas armazenam dados imutáveis e relacionados
+    precos_peso = [
+        ('Aveia', 165, 12.99),
+        ('Doce de Leite', 450, 10.00),
+        ('Whey (proteína de soro de leite)', 1000, 120.00),
+        ('Arroz cozido', 1000, 9.19),
+        ('Carne (bovina cozida)', 1000, 27.99),
+        ('Frango (peito cozido)', 1000, 21.97),
+        ('Legumes', 180, 4.99),
+        ('Nozes', 180, 9.99)
+    ]
+    
+    #Preço dos produtos por unidade
+    precos_unidade = [
+        ('Banana', 6, 3.99),
+        ('Pão Francês', 2, 1.90), 
+        ('Maçã', 11, 8.99)
+    ]
+
+
+    precos_peso_dict = {item: (peso, preco) for item, peso, preco in precos_peso} #Utilização do método dict comprehension: cria um dicionário e dá append em item, primeiro arg da tupla,peso, preco
+    precos_unidade_dict = {item: (unidade, preco) for item, unidade, preco in precos_unidade}
+
+    quantidades = {} #Dicionário das quantidades, vai armazenar nome do item e quantidade total 
+    lista_aux = []
+
+    #Leitura do arquivo 'calorias_dia.txt'
+    with open('calorias_dia.txt', 'r') as arquivo: 
+        for linha in arquivo:
+            if 'g/unidade' in linha:
+                lista_aux.append(linha.strip()) #Joga para lista auxiliar, apenas as linhas que contém item: pesagem/unidade
+
+    #Iteração sobre a lista auxiliar
+    for linha in lista_aux: 
+        for prefixo in prefixos:
+            if linha.startswith(prefixo): #Se a linha começa com os prefixos, então, são eliminados
+                restante = linha.removeprefix(prefixo).strip()
+                quantidade = float(restante.split()[0]) #'quantidade' é o primeiro item da lista restante que será splitada por espaços em branco. ex: '[2.0, g, ...]
+                produto = prefixo.replace(":", "").strip()#Depois, removemos os espaços em branco para pegar o nome do item
+                if produto in quantidades:
+                    quantidades[produto] += quantidade #Soma a quantidade ao produto relacionado no dicionário
+                else:
+                    quantidades[produto] = quantidade
+                break
+
+    custo_mensal = 0
+    
+    for produto, quantidade in quantidades.items():
+        if produto in precos_peso_dict:
+            peso_pacote, preco_pacote = precos_peso_dict[produto]
+            total_gramas = quantidade * 30
+            pacotes_necessarios = math.ceil(total_gramas / peso_pacote)
+            custo_produto = pacotes_necessarios * preco_pacote
+        elif produto in precos_unidade_dict:
+            unidade_pacote, preco_pacote = precos_unidade_dict[produto]
+            total_unidades = quantidade * 30
+            pacotes_necessarios = math.ceil(total_unidades / unidade_pacote)
+            custo_produto = pacotes_necessarios * preco_pacote
+        else:
+            continue
+        
+        custo_mensal += custo_produto
+        print(f'{produto}: {quantidade * 30:.2f} total - {pacotes_necessarios} pacotes x R$ {preco_pacote:.2f}/pacote = R$ {custo_produto:.2f}')
+
+    print(f'\nCusto total mensal: R$ {custo_mensal:.2f}')
+    
+    salvar_preco(custo_mensal)
+
 def calcula_calorias():
     refeicoes = {
         'primeira_refeicao': [],
@@ -75,8 +161,9 @@ def salvar_calorias(refeicoes, total_calorias):
 
         arquivo.write(f'Total de calorias no dia: {total_calorias:.2f} kcal\n')
 
-def calcula_preco():
-    pass
+def salvar_preco(total_preco):
+    with open('preco_mensal.txt', 'w') as arquivo:
+        arquivo.write(f"Total de preço da dieta no mês: R$ {total_preco:.2f}\n")
 
 def main():
     print(f'OPÇÕES: \n [1] Calcular calorias da dieta \n [2] Calcular preço da dieta \n')
@@ -84,6 +171,8 @@ def main():
 
     if opcao == 1:
         calcula_calorias()
+    elif opcao == 2:
+        calcula_preco()
 
 if __name__ == "__main__":
     main()
