@@ -6,7 +6,7 @@ Foco do projeto: Python
 Nível do projeto: intermediário
 
 1.Breve Descrição do Projeto
-O projeto é um sistema de gerenciamento para calcular o custo mensal e as calorias diárias de uma dieta. Ele lê dados de consumo de alimentos de um arquivo, calcula o custo mensal com base nos preços dos pacotes e as quantidades consumidas, e calcula o total de calorias para as refeições diárias. O sistema também permite salvar os resultados em arquivos para análise posterior.
+  O projeto é um sistema de gerenciamento para calcular o custo mensal e as calorias diárias de uma dieta. Ele lê dados de consumo de alimentos de um arquivo, calcula o custo mensal com base nos preços dos pacotes e as quantidades consumidas, e calcula o total de calorias para as refeições diárias. O sistema também permite salvar os resultados em arquivos para análise posterior.O projeto está organizado em funções modulares, facilitando a manutenção e possíveis expansões futuras. O código foi desenvolvido em Python e demonstra habilidades intermediárias na linguagem, como manipulação de arquivos, uso de funções matemáticas para arredondamento (ceil), e lógica condicional para cálculo e verificação de dados. 
 
 2.Funcionalidades
   a) Cálculo de Preço Mensal:
